@@ -8,7 +8,7 @@ async function recRangking(callback) {
       if (!error && response.statusCode === 200) {
           const $ = cheerio.load(html);
           const data = [];
-          const items = $('ul.common_sp_list_ul li').slice(0, 10); 
+          const items = $('ul.common_sp_list_ul li').slice(0, 5); 
           for (let i = 0; i < items.length; i++) { 
               const item = items.eq(i);
               const title = item.find('.common_sp_caption_tit').text().trim();
