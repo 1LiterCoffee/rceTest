@@ -14,7 +14,7 @@ async function recRangking(callback) {
               const item = items.eq(i);
               const title = item.find('.common_sp_caption_tit').text().trim();
               const imgSrc = item.find('.common_sp_link > img').attr('src');
-              const url = "https://www.10000recipe.com/"+item.find('.common_sp_thumb a').attr('href');
+              const url = "https://www.10000recipe.com"+item.find('.common_sp_thumb a').attr('href');
               data.push({title,imgSrc,url})
           }
           callback(null, data);
