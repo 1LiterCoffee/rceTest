@@ -5,6 +5,7 @@ const recRangking = require('../apis/recRangking')
 const recRangkingKeyword = require('../apis/recRangkingKeyword')
 const recRangkingDetail = require('../apis/recRangkingDetail')
 const recRangkingSearch = require('../apis/recRangkingSearch')
+const recClass = require('../apis/recClass');
 router.get(
     "/rangking",
     wrap(async function (req, res, next) {
@@ -61,6 +62,19 @@ router.get(
             }
           });
     })
+  );
+  router.get(
+    "/recClass",
+    wrap(async function (req, res, next) {
+        console.log('recClass in');
+        await recClass((error, data) => {
+            if (error) {
+                res.send(error)
+            } else {
+                console.log(data.length);
+              res.send(data)
+            }
+          });
+    })
   );   
-
   module.exports = router;

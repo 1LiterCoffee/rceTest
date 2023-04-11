@@ -12,7 +12,6 @@ async function recRangkingKeyword(callback) {
           const keyword = $(el).find('.best_cont a').text().trim();
           data.push({rangking:i+1,keyword:keyword});
         });
-        console.log(data);
         callback(null, data);
       } else {
         callback(error);
