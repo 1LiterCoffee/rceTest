@@ -3,6 +3,7 @@ const router = express.Router();
 const wrap = require("express-async-wrap");
 const recRangking = require('../apis/recRangking')
 const recRangkingKeyword = require('../apis/recRangkingKeyword')
+const recRangkingDetail = require('../apis/recRangkingDetail')
 router.get(
     "/rangking",
     wrap(async function (req, res, next) {
@@ -29,6 +30,21 @@ router.get(
             }
           });
     })
-  ); 
+  );
+  router.get(
+    "/rangkingDetail/",
+    wrap(async function (req, res, next) {
+        console.log('detail in');
+        let param = req.query;
+        await recRangkingDetail(param.url,(error, data) => {
+            if (error) {
+                res.send(error)
+            } else {
+                console.log(data.length);
+              res.send(data)
+            }
+          });
+    })
+  );  
 
   module.exports = router;
