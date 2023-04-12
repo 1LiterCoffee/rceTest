@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const moment = require('moment')
 const wrap = require("express-async-wrap");
 const recRangking = require('../apis/recRangking')
 const recRangkingKeyword = require('../apis/recRangkingKeyword')
@@ -10,6 +11,7 @@ const recClassDetail = require('../apis/recClassDetail')
 router.get(
     "/rangking",
     wrap(async function (req, res, next) {
+      console.log(`${moment().format('MM-DD HH:mm:ss')}rangking in`);
         await recRangking((error, data) => {
             if (error) {
                 res.send(error)
@@ -23,7 +25,7 @@ router.get(
   router.get(
     "/rangkingKeyword/",
     wrap(async function (req, res, next) {
-        console.log('fdsaf');
+      console.log(`${moment().format('MM-DD HH:mm:ss')}rangkingKeyword in`);
         await recRangkingKeyword((error, data) => {
             if (error) {
                 res.send(error)
@@ -37,7 +39,7 @@ router.get(
   router.get(
     "/rangkingDetail/",
     wrap(async function (req, res, next) {
-        console.log('detail in');
+      console.log(`${moment().format('MM-DD HH:mm:ss')}rangkingDetail in`);
         let param = req.query;
         await recRangkingDetail(param.url,(error, data) => {
             if (error) {
@@ -52,7 +54,7 @@ router.get(
   router.get(
     "/recRangkingSearch/",
     wrap(async function (req, res, next) {
-        console.log('recRangkingSearch in');
+        console.log(`${moment().format('MM-DD HH:mm:ss')}recRangkingSearch in`);
         let param = req.query;
         await recRangkingSearch(param.nm,(error, data) => {
             if (error) {
@@ -67,7 +69,7 @@ router.get(
   router.get(
     "/recClass",
     wrap(async function (req, res, next) {
-        console.log('recClass in');
+      console.log(`${moment().format('MM-DD HH:mm:ss')}recClass in`);
         await recClass((error, data) => {
             if (error) {
                 res.send(error)
@@ -81,7 +83,7 @@ router.get(
   router.get(
     "/recClassDetail",
     wrap(async function (req, res, next) {
-        console.log('recClassDetail in');
+        console.log(`${moment().format('MM-DD HH:mm:ss')}recClassDetail in`);
         let param = req.query;
         await recClassDetail(param.url,(error, data) => {
             if (error) {

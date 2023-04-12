@@ -42,7 +42,6 @@ async function recRangkingDetail(url, callback) {
       //   data.push({ title,nm, ea });
       // });
       //
-      console.log(data);
       callback(null, data);
     } else {
       callback(error);

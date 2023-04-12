@@ -18,7 +18,6 @@ async function recRangkingKeyword(url,callback) {
           const videoUrl = $(el).find('iframe').attr('src')
           data.push({imgUrl,title,subTitle,dc,price,del,time,date,videoUrl});
         });
-        console.log(data)
         callback(null, data);
       } else {
         callback(error);
