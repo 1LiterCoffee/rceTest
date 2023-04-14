@@ -5,7 +5,6 @@ const url = "https://www.10000recipe.com/ranking/home_new.html?dtype=m&rtype=r";
 
 async function recRangking(callback) {
   request(url, async (error, response, html) => { 
-      console.log("recRangking in");
       if (!error && response.statusCode === 200) {
           const $ = cheerio.load(html);
           const data = [];

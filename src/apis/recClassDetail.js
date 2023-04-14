@@ -7,7 +7,7 @@ async function recRangkingKeyword(url,callback) {
         const $ = cheerio.load(html);
         const data = [];
         $('div.col-xs-9').each((i, el) => {
-          const imgUrl = $(el).find('.view2_pic .centeredcrop > img').attr('src')//.text().trim();
+          const imgUrl = $(el).find('.view2_pic .centeredcrop > img').attr('src')
           const title = $(el).find('.view2_summary h3').text().trim();
           const subTitle = $(el).find('.view2_summary .view2_summary_in').text().trim();
           const dc = $(el).find('.view2_summary .price_box .dc').text().trim();
