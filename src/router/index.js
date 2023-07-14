@@ -9,7 +9,7 @@ const recRangkingDetail = require("../apis/recRangkingDetail");
 const recRangkingSearch = require("../apis/recRangkingSearch");
 const recClass = require("../apis/recClass");
 const recClassDetail = require("../apis/recClassDetail");
-
+router.use(express.static('public'));
 router.get(
   "/test",
   wrap(async function (req, res, next) {
