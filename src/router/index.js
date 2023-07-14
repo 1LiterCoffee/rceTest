@@ -10,6 +10,14 @@ const recClass = require("../apis/recClass");
 const recClassDetail = require("../apis/recClassDetail");
 
 router.get(
+  "/test",
+  wrap(async function (req, res, next) {
+    console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
+    res.sendFile(__dirname+'../list/index.html')
+  })
+);
+
+router.get(
   "/rangking",
   wrap(async function (req, res, next) {
     console.log(`${moment().format("MM-DD HH:mm:ss")} rangking in`);
