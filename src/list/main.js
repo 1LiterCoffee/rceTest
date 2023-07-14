@@ -5,8 +5,8 @@ $(document).ready(function () {
   const showPageCnt = 5;
 
   var myHeaders = new Headers();
-  myHeaders.append("coginsight-api-key", "yoS2HzMPxkWjpuoCHXsxDh6etrzFzaX0ta0ThtGRgxpdmqP7SWTFJ6V8dZuTOz0SLhg4rTtIvrvLcJ2Xynobig==|3VB0hdbZV8kpMYFRLp1gLb4RvhRc5aq6Ok9GWzDEiQ4=");
-  myHeaders.append("coginsight-domain-id", "8145db75-5fbb-4440-bfea-f4ebd711f138");
+  myHeaders.append("Authorization", "Basic Y29nQG1pbmR3YXJld29ya3MuY29tL3Rva2VuOmcycUo5Z0RkTDF0bDJ3cnpmNmRReUhIQmR4YTNBdE9Va2c4M25DRWk=");
+  myHeaders.append("Cookie", "__cfruid=3695abfd69ea5673d33f607ffca67c9bbaab7ae2-1689319766; _zendesk_cookie=BAhJIhl7ImRldmljZV90b2tlbnMiOnt9fQY6BkVU--0bf2100788cb010d0183feca16aaf88ccaf719ca");
   
   var requestOptions = {
     method: 'GET',
@@ -14,15 +14,36 @@ $(document).ready(function () {
     redirect: 'follow'
   };
   
-  fetch("https://v2.coginsight.net/apis/esd/TEAMS_TEST/records?createdAt.from=2023-06-01", requestOptions)
+  fetch("api/v2/tickets.json?include=custom_statuses", requestOptions)
     .then(response => response.json())
     .then(data => {
-        todoData = data;
+      todoData = data.tickets;
         $(".card-title").append(`<span class="text-muted fw-normal ms-2">(${todoData.length})</span>`)
-        console.log('dd');
         setTable(1, todoData, countPerPage, showPageCnt);
-        setPaging(1, todoData, countPerPage, showPageCnt);})
+        setPaging(1, todoData, countPerPage, showPageCnt);
+    })
     .catch(error => console.log('error', error));
+
+  // var myHeaders = new Headers();
+  // myHeaders.append("coginsight-api-key", "yoS2HzMPxkWjpuoCHXsxDh6etrzFzaX0ta0ThtGRgxpdmqP7SWTFJ6V8dZuTOz0SLhg4rTtIvrvLcJ2Xynobig==|3VB0hdbZV8kpMYFRLp1gLb4RvhRc5aq6Ok9GWzDEiQ4=");
+  // myHeaders.append("coginsight-domain-id", "8145db75-5fbb-4440-bfea-f4ebd711f138");
+  
+  // var requestOptions = {
+  //   method: 'GET',
+  //   headers: myHeaders,
+  //   redirect: 'follow'
+  // };
+  
+  // fetch("apis/esd/TEAMS_TEST/records?createdAt.from=2023-06-01", requestOptions)
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     console.log(data);
+  //       todoData = data;
+  //       $(".card-title").append(`<span class="text-muted fw-normal ms-2">(${todoData.length})</span>`)
+  //       console.log('dd');
+  //       setTable(1, todoData, countPerPage, showPageCnt);
+  //       setPaging(1, todoData, countPerPage, showPageCnt);})
+  //   .catch(error => console.log('error', error));
 
   //   fetch('https://jsonplaceholder.typicode.com/todos')
   // .then(response => response.json())
@@ -97,8 +118,8 @@ $(document).ready(function () {
             <td style="display: table-cell;
             text-align: center;
             vertical-align: middle;">${filteredData[i].id}</td>
-            <td>${filteredData[i].completed}</td>
-            <td>${filteredData[i].title}</td>
+            <td>${filteredData[i].type}</td>
+            <td>${filteredData[i].subject}</td>
             <td>test</td>
         </tr>`;
     }
