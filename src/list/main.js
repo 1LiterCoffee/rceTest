@@ -4,38 +4,38 @@ $(document).ready(function () {
   const countPerPage = 10;
   const showPageCnt = 5;
 
-//   var myHeaders = new Headers();
-//   myHeaders.append("coginsight-api-key", "yoS2HzMPxkWjpuoCHXsxDh6etrzFzaX0ta0ThtGRgxpdmqP7SWTFJ6V8dZuTOz0SLhg4rTtIvrvLcJ2Xynobig==|3VB0hdbZV8kpMYFRLp1gLb4RvhRc5aq6Ok9GWzDEiQ4=");
-//   myHeaders.append("coginsight-domain-id", "8145db75-5fbb-4440-bfea-f4ebd711f138");
+  var myHeaders = new Headers();
+  myHeaders.append("coginsight-api-key", "yoS2HzMPxkWjpuoCHXsxDh6etrzFzaX0ta0ThtGRgxpdmqP7SWTFJ6V8dZuTOz0SLhg4rTtIvrvLcJ2Xynobig==|3VB0hdbZV8kpMYFRLp1gLb4RvhRc5aq6Ok9GWzDEiQ4=");
+  myHeaders.append("coginsight-domain-id", "8145db75-5fbb-4440-bfea-f4ebd711f138");
   
-//   var requestOptions = {
-//     method: 'GET',
-//     headers: myHeaders,
-//     redirect: 'follow'
-//   };
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
   
-//   fetch("https://v2.coginsight.net/apis/esd/TEAMS_TEST/records?createdAt.from=2023-06-01", requestOptions)
-//     .then(response => response.json())
-//     .then(data => {
-//         todoData = data;
-//         $(".card-title").append(`<span class="text-muted fw-normal ms-2">(${todoData.length})</span>`)
-//         console.log('dd');
-//         setTable(1, todoData, countPerPage, showPageCnt);
-//         setPaging(1, todoData, countPerPage, showPageCnt);})
-//     .catch(error => console.log('error', error));
+  fetch("https://v2.coginsight.net/apis/esd/TEAMS_TEST/records?createdAt.from=2023-06-01", requestOptions)
+    .then(response => response.json())
+    .then(data => {
+        todoData = data;
+        $(".card-title").append(`<span class="text-muted fw-normal ms-2">(${todoData.length})</span>`)
+        console.log('dd');
+        setTable(1, todoData, countPerPage, showPageCnt);
+        setPaging(1, todoData, countPerPage, showPageCnt);})
+    .catch(error => console.log('error', error));
 
-    fetch('https://jsonplaceholder.typicode.com/todos')
-  .then(response => response.json())
-  .then(data => {
-    todoData = data;
-      $(".card-title").append(`<span class="text-muted fw-normal ms-2">(${todoData.length})</span>`)
-      console.log('dd');
-      setTable(1, todoData, countPerPage, showPageCnt);
-      setPaging(1, todoData, countPerPage, showPageCnt);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  //   fetch('https://jsonplaceholder.typicode.com/todos')
+  // .then(response => response.json())
+  // .then(data => {
+  //   todoData = data;
+  //     $(".card-title").append(`<span class="text-muted fw-normal ms-2">(${todoData.length})</span>`)
+  //     console.log('dd');
+  //     setTable(1, todoData, countPerPage, showPageCnt);
+  //     setPaging(1, todoData, countPerPage, showPageCnt);
+  // })
+  // .catch(error => {
+  //   console.error('Error:', error);
+  // });
 
   $(document).on("click", "div.paging>div.pages>span", function () {
     if (!$(this).hasClass("active")) {
