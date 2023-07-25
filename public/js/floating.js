@@ -45,27 +45,27 @@ $(document).ready(function () {
   <div class="wrap-title"><span class="contact2-form-title">문의하기</span></div>
     <form class="contact2-form validate-form" id="formData">
       <div class="wrap-input2 validate-input" data-validate="이메일 형식을 맞춰주세요">
-      <span class="label-input2">이메일</span>
+      <span class="label-input2">이메일</span><span style="color:red">*</span>
       <input class="input2" type="text" name="email" placeholder="ex@abc.xyz">
       <span class="focus-input2"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="이름은 필수입니다.">
-        <span class="label-input2">이름</span>
+        <span class="label-input2">이름</span><span style="color:red">*</span>
         <input class="input2" type"text" name="name" required autocomplete="off" id="name"/>
         <span class="focus-input2"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="사이트는 필수입니다.">
-        <span class="label-input2">사이트</span>
+        <span class="label-input2">사이트</span><span style="color:red">*</span>
         <input class="input2" type"text" placeholder="MindwareWorks" name="site" autocomplete="off" required />
         <span class="focus-input2"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="제목은 필수입니다.">
-        <span class="label-input2">제목</span>
+        <span class="label-input2">제목</span><span style="color:red">*</span>
         <input class="input2" type"text" name="title" autocomplete="off" required/>
         <span class="focus-input2"></span>
       </div>
       <div id="last-input" class="wrap-input2 validate-input" data-validate="문의내용은 필수입니다.">
-        <span class="label-input2">문의내용</span>
+        <span class="label-input2">문의내용</span><span style="color:red">*</span>
         <textarea class="input2" name="comment" autocomplete="off" required id="comment"></textarea>
         <span class="focus-input2"></span>
       </div>

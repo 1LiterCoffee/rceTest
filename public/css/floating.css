@@ -614,6 +614,7 @@ textarea.input2 + .focus-input2::after {
 }
 
 .input-file-div div {
+  padding: 0px 5px 0px 0px;
   display: flex;
   min-height: 2.28571rem;
   z-index: 2;
@@ -687,7 +688,7 @@ textarea.input2 + .focus-input2::after {
   position: relative;
   border: 1px solid rgb(245, 181, 186);
   border-radius: 4px;
-  padding: 5px 40px 5px 40px;
+  padding: 5px 30px 5px 30px;
   line-height: 1.42857;
   font-size: 14px;
   background-color: rgb(255, 240, 241);
