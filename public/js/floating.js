@@ -16,7 +16,7 @@ $(document).ready(function () {
     "</div>",
     "</div>",
   ].join("");
-  var floatingBtn = "<button class='floating-start'><img src='../img/intro_icon.png'/></button>";
+  var floatingBtn = "<button class='floating-start'><img src='../img/ico_intro.png'/></button>";
 
   $(floatingArea).appendTo("body");
   $(floatingBtn).appendTo("body");
@@ -441,6 +441,7 @@ function formSubmit(){
         invalidFields.push(field.selector);
         showValidate(input); // 유효하지 않은 입력에 대한 오류 메시지 표시
       } else {
+        $(input).parent().addClass("true-validate")
         hideValidate(input); // 유효한 입력에 대한 오류 메시지 숨기기
       }
     });
@@ -510,7 +511,17 @@ function inputValChange(){
     $(this).on("blur", function () {
       if ($(this).val().trim() != "") {
         $(this).addClass("has-val");
+        if($(this).attr('name') == "email"){
+          const pattern = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/;
+          if(pattern.test($(this).val().trim())){
+            $(this).parent().addClass("true-validate")
+          }
+        }else{
+          $(this).parent().addClass("true-validate")
+        }
+        
       } else {
+        $(this).parent().removeClass("true-validate")
         $(this).removeClass("has-val");
       }
     });
