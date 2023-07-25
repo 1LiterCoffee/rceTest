@@ -44,30 +44,25 @@ $(document).ready(function () {
   <div class='wrap-contact2' style="padding:0px !important;">
   <div class="wrap-title"><span class="contact2-form-title">문의하기</span></div>
     <form class="contact2-form validate-form" id="formData">
-      <div class="wrap-input2 validate-input" data-validate="이메일 형식을 맞춰주세요">
-      <span class="label-input2">이메일</span>
-      <input class="input2" type="text" name="email" placeholder="ex@abc.xyz">
-      <span class="focus-input2"></span>
+      <div class="wrap-input2 validate-input" data-validate="이메일 형식을 지켜주세요">
+        <input class="input2" type="email" name="email" id="email">
+        <span class="focus-input2 emphasis" data-placeholder="이메일 *"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="이름은 필수입니다.">
-        <span class="label-input2">이름</span>
         <input class="input2" type"text" name="name" required autocomplete="off" id="name"/>
-        <span class="focus-input2"></span>
+        <span class="focus-input2" data-placeholder="이름 *"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="사이트는 필수입니다.">
-        <span class="label-input2">사이트</span>
-        <input class="input2" type"text" placeholder="MindwareWorks" name="site" autocomplete="off" required />
-        <span class="focus-input2"></span>
+        <input class="input2" type"text" name="site" autocomplete="off" required />
+        <span class="focus-input2" data-placeholder="사이트 *"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="제목은 필수입니다.">
-        <span class="label-input2">제목</span>
         <input class="input2" type"text" name="title" autocomplete="off" required/>
-        <span class="focus-input2"></span>
+        <span class="focus-input2" data-placeholder="제목 *"></span>
       </div>
       <div id="last-input" class="wrap-input2 validate-input" data-validate="문의내용은 필수입니다.">
-        <span class="label-input2">문의내용</span>
         <textarea class="input2" name="comment" autocomplete="off" required id="comment"></textarea>
-        <span class="focus-input2"></span>
+        <span class="focus-input2" data-placeholder="문의내용 *"></span>
       </div>
       <div class="input-file" style="margin-bottom: 10px;">
         <label class="input-file-button" for="input-file">
@@ -298,12 +293,11 @@ async function createTicket(formData, callback) {
     body: JSON.stringify(createBody),
     redirect: "follow",
   };
-  
   // test용! 아래 리턴까지 주석 필요함
   // callback(null, "test"); 
   // return;
   // 티켓 생성 api 호출
-  
+  console.log(createOption);
   const result = await fetch("zen/api/v2/tickets.json", createOption);
   if (result.ok) {
     const response = await result.json();
@@ -471,7 +465,7 @@ function formSubmit(){
     return check;
   });
 }
-/**textarea 크기 조절 */
+/**text area 크기 조절 */
 function autoResizeTextarea() {
   $(this).css("height", "auto");
   $(this).css("height", this.scrollHeight + "px");
