@@ -17,12 +17,21 @@ router.get(
   })
 );
 router.post(
-  "/test",
+  "/enc",
   wrap(async function (req, res, next) {
     console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
     console.log(req.body);
     const result = req.body.data;
-    res.send(`!!!${result}!!!`)
+    res.send(`${result}[enc]`)
+  })
+);
+router.post(
+  "/dec",
+  wrap(async function (req, res, next) {
+    console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
+    console.log(req.body);
+    const result = req.body.data.replce("[enc]","");
+    res.send(`${result}[dec]`)
   })
 );
 module.exports = router;
