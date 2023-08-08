@@ -19,18 +19,18 @@ router.get(
 router.post(
   "/enc",
   wrap(async function (req, res, next) {
-    console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
+    console.log(`${moment().format("MM-DD HH:mm:ss")} enc in`);
     console.log(req.body);
-    const result = req.body.data[0];
+    const result = req.body.data;
     res.send(`${result}[enc]`)
   })
 );
 router.post(
   "/dec",
   wrap(async function (req, res, next) {
-    console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
+    console.log(`${moment().format("MM-DD HH:mm:ss")} dec in`);
     console.log(req.body);
-    const result = req.body.data[0].replace(/\[enc\]/,"")
+    const result = req.body.data.replace(/\[enc\]/,"")
     res.send(`${result}[dec]`)
   })
 );
