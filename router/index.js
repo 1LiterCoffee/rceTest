@@ -16,7 +16,7 @@ router.get(
     res.sendFile(filePath)
   })
 );
-router.get(
+router.post(
   "/test",
   wrap(async function (req, res, next) {
     console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
