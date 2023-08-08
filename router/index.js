@@ -30,7 +30,7 @@ router.post(
   wrap(async function (req, res, next) {
     console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
     console.log(req.body);
-    const result = req.body.data.replace("[enc]","");
+    const result = req.body.data.replace(/\[enc\]/,"")
     res.send(`${result}[dec]`)
   })
 );
