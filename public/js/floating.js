@@ -1,5 +1,7 @@
 let fileArr = [];
 let sendYn = false;
+let floatingOpenYn = false;
+let editor;
 // 환경변수로 바꿔야하는데 테스트 환경에서는 nodejs지만 스프링으로 변경해야해서 수석님한테 물어볼것!
 const apiHeaders = new Headers({
   Authorization:
@@ -8,64 +10,68 @@ const apiHeaders = new Headers({
     "__cfruid=14c888647753f4b6452a8a32a33356387a20fec6-1689828843; _zendesk_cookie=BAhJIhl7ImRldmljZV90b2tlbnMiOnt9fQY6BkVU--0bf2100788cb010d0183feca16aaf88ccaf719ca",
 });
 $(document).ready(function () {
-  //시작!
-  var floatingArea = [
-    "<div class='floating-box'>",
-    "<div class='floating-frame'>",
+  //초기 세팅
+  var inquiryArea = [
+    "<div class='inquiry-box'>",
+    "<div class='inquiry-frame'>",
     "<button class='close'><i style='color: rgb(40, 50, 10) !important;'class='bi bi-chevron-compact-down'></i></button>",
     "</div>",
     "</div>",
   ].join("");
-  var floatingBtn = "<button class='floating-start'><img src='../img/ico_intro.png'/></button>";
+  var inquiryBtn =
+    "<button class='inquiry-start'><img src='../img/ico_intro.png'/></button>";
 
-  $(floatingArea).appendTo("body");
-  $(floatingBtn).appendTo("body");
+  $(inquiryArea).appendTo("body");
+  $(inquiryBtn).appendTo("body");
   // 플로팅 버튼 클릭 문의하기 띄우기
-  $(".floating-start").on("click", function () {
-    $(".floating-start").css("display", "none");
-    $(".floating-box").css("display", "block");
+  
+  $(".inquiry-start").on("click", function () {
+    $(".inquiry-start").css("display", "none");
+    $(".inquiry-box").css("display", "block");
+    if(!floatingOpenYn){
+      loadinquiry();
+      floatingOpenYn = true;
+    }
     //문의 접수 후 다시 클릭
     if (sendYn) {
-      $(".floating-frame").children().not(".close").remove();
+      $(".inquiry-frame").children().not(".close").remove();
       sendYn = false;
     }
-    $loadFloating();
   });
 
   $(".close").on("click", function () {
-    $(".floating-box").css("display", "none");
-    $(".floating-start").css("display", "block");
+    $(".inquiry-box").css("display", "none");
+    $(".inquiry-start").css("display", "block");
   });
- 
 });
 /** 플로팅 화면 로드 */
- function $loadFloating() {
+function loadinquiry() {
   const frameBody = `
   <div class='wrap-contact2' style="padding:0px !important;">
   <div class="wrap-title"><span class="contact2-form-title">문의하기</span></div>
     <form class="contact2-form validate-form" id="formData">
       <div class="wrap-input2 validate-input" data-validate="이메일 형식을 맞춰주세요">
-      <span class="label-input2">이메일</span><span style="color:red">*</span>
-      <input class="input2" type="text" name="email" placeholder="ex@abc.xyz">
+      <span class="label-input2">이메일</span><span style="color:indianred">*</span>
+      <input class="input2" type="email" name="email" placeholder="">
       <span class="focus-input2"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="이름은 필수입니다.">
-        <span class="label-input2">이름</span><span style="color:red">*</span>
+        <span class="label-input2">이름</span><span style="color:indianred">*</span>
         <input class="input2" type"text" name="name" required autocomplete="off" id="name"/>
         <span class="focus-input2"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="사이트는 필수입니다.">
-        <span class="label-input2">사이트</span><span style="color:red">*</span>
-        <input class="input2" type"text" placeholder="MindwareWorks" name="site" autocomplete="off" required />
+        <span class="label-input2">사이트</span><span style="color:indianred">*</span>
+        <input class="input2" type"text" placeholder="마인드웨어웍스" name="site" autocomplete="off" required />
         <span class="focus-input2"></span>
       </div>
       <div class="wrap-input2 validate-input" data-validate="제목은 필수입니다.">
-        <span class="label-input2">제목</span><span style="color:red">*</span>
+        <span class="label-input2">제목</span><span style="color:indianred">*</span>
         <input class="input2" type"text" name="title" autocomplete="off" required/>
         <span class="focus-input2"></span>
       </div>
       <div id="last-input" class="wrap-input2 validate-input" data-validate="문의내용은 필수입니다.">
-        <span class="label-input2">문의내용</span><span style="color:red">*</span>
+        <span class="label-input2">문의내용</span><span style="color:indianred">*</span>
         <textarea class="input2" name="comment" autocomplete="off" required id="comment"></textarea>
         <span class="focus-input2"></span>
       </div>
@@ -85,20 +91,232 @@ $(document).ready(function () {
     </div>
   </div>
   `;
+  $(".inquiry-frame").append(frameBody);
+   // textarea에 입력되는 내용이 변경될 때마다 자동으로 높이를 조절
+  $("textarea").on("input", autoResizeTextarea);
+   // 페이지 로드 시 초기 높이를 설정
+  $("textarea").each(autoResizeTextarea);
+  /**input 변경 감지, class 변경*/
+  $(".input2").each(function () {
+    $(this).on("blur", function () {
+      if ($(this).val().trim() != "") {
+        $(this).addClass("has-val");
+      } else {
+        $(this).removeClass("has-val");
+      }
+    });
+  });
+  // 포커스 후 강조 삭제
+  $(".validate-form .input2").each(function () {
+    $(this).focus(function () {
+      hideValidate(this);
+    });
+  });
+  // 파일 업로드 감지
+  $("#input-file").change(function () {
+    fileArr.push(...this.files);
+    fileArr = [...fileArr];
+    showFileList();
+  });
+  // 폼 제출로 변경
+  $("#submitBtn").on("click", function () {
+    $("#formData").submit();
+  });
+  // 파일 업로드 시 기존 선택값 삭제
+  $("#input-file").on("click", function () {
+    $(this).val(null);
+  });
 
-  $(".floating-frame").append(frameBody);
-  $("textarea").on("input", autoResizeTextarea); // textarea에 입력되는 내용이 변경될 때마다 자동으로 높이를 조절
-  $("textarea").each(autoResizeTextarea); // 페이지 로드 시 초기 높이를 설정
-  
-  inputValChange();
-  changeFiles();
-  formAlertDelete();
-  submitChange();
   formSubmit();
-  deleteSelectedValue();
+}
+
+
+
+/** 폼 제출*/
+function formSubmit() {
+  // form 제출
+  $("#formData").on("submit", async function (event) {
+    event.preventDefault();
+    let fields = [
+      {
+        name: "email",
+        selector: '.validate-input input[name="email"]',
+        required: true,
+        pattern:
+          /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/,
+      },
+      {
+        name: "name",
+        selector: '.validate-input input[name="name"]',
+        required: true,
+      },
+      {
+        name: "site",
+        selector: '.validate-input input[name="site"]',
+        required: true,
+      },
+      {
+        name: "title",
+        selector: '.validate-input input[name="title"]',
+        required: true,
+      },
+      {
+        name: "comment",
+        selector: '.validate-input textarea[name="comment"]',
+        required: true,
+      },
+    ];
+    
+    let invalidFields = [];
+    fields.forEach((field) => {
+      let input = $(field.selector);
+      let value = input.val().trim();
+      let valid =
+        !(field.required && value === "") &&
+        !(field.pattern && !field.pattern.test(value));
+
+      if (!valid) {
+        invalidFields.push(field.selector);
+        showValidate(input); // 유효하지 않은 입력에 대한 오류 메시지 표시
+      } else {
+        hideValidate(input); // 유효한 입력에 대한 오류 메시지 숨기기
+      }
+    });
+
+    let check = invalidFields.length === 0;
+    //유효성 체크 통과
+    if (check) {
+      loading("show");
+      await createTicket($(this).serializeArray(), (err, data) => {
+        if (err) {
+          console.log(err);
+          errorScreen();
+        } else {
+          console.log({ status: data.status, statusText: data.statusText });
+          completedScreen();
+        }
+      });
+      fileArr = []; //초기화
+      $(this).trigger("reset");
+      $(".input-file-div").remove();
+      loading("hide");
+      $(".contact2-form").hide();
+      $("#submitBtn").hide();
+    } else {
+      scrollTo("#formData", invalidFields[0]);
+    }
+
+    return check;
+  });
+}
+/** 티켓 생성 API 호출 (중요)*/
+async function createTicket(formData, callback) {
+  console.log("createTicket function start");
+  $("#submitBtn").prop("disabled", true);
+  let tokenList = [];
+  // 파일 업로드
+  if (fileArr.length > 0) {
+    await uploadFile(fileArr, (err, data) => {
+      if (err) {
+        callback(err, data);
+        return false;
+      } else {
+        tokenList = data;
+      }
+    });
+    if (_.isEmpty(tokenList)) {
+      return;
+    }
+  }
+  // 티켓 생성 body 세팅
+  let createBody = {
+    ticket: {
+      subject: formData.find((o) => o.name == "title").value,
+      comment: {
+        body: formData.find((o) => o.name == "comment").value,
+        uploads: tokenList,
+      },
+      custom_fields: [
+        {
+          id: 20604769936153,
+          value: formData.find((o) => o.name == "site").value,
+        },
+        {
+          id: 20611214831257,
+          value: formData.find((o) => o.name == "name").value,
+        },
+      ],
+      requester: {
+        name: formData.find((o) => o.name == "name").value,
+        email: formData.find((o) => o.name == "email").value,
+      },
+    },
+  };
+  // file 업로드 시 "Content-Type"을 바꿔주기때문에 다시 바꿔줘야함
+  apiHeaders.set("Content-Type", "application/json");
+  let createOption = {
+    method: "POST",
+    headers: apiHeaders,
+    body: JSON.stringify(createBody),
+    redirect: "follow",
+  };
+  // 티켓 생성 api 호출
+  const result = await fetch("zen/api/v2/tickets.json", createOption);
+  console.log(result);
+  if (result.ok) {
+    const response = await result.json();
+    callback(null, result);
+    console.log("create success!!:", response);
+    return;
+  } else {
+    callback({ status: result.status, statusText: result.statusText }, result);
+    alert("생성중 오류가 발생했습니다. 잠시 후 다시 등록해주세요.");
+    console.log("티켓 생성 실패", result.json());
+    return;
+  }
+}
+/** 파일 업로드 */
+async function uploadFile(fileArr, callback) {
+  let tokenList = [];
+
+  if (!_.isEmpty(fileArr)) {
+    console.log(`파일 업로드 ${fileArr.length}건 실행`);
+    for (const file of fileArr) {
+      apiHeaders.set("Content-Type", file.type || "text/plain"); // 브라우저에서 MIME를 정해주지않으면 text/plain으로 변경
+      try {
+        let requestOptions = {
+          method: "POST",
+          headers: apiHeaders,
+          body: file,
+          redirect: "follow",
+        };
+
+        const response = await fetch(
+          `zen/api/v2/uploads.json?filename=${file.name}`,
+          requestOptions
+        );
+        if (response.ok) {
+          const result = await response.json();
+          tokenList.push(result.upload.token);
+        } else {
+          console.log(`파일 업로드 에러 발생>> ${file.name}`);
+          callback(
+            { status: response.status, statusText: response.statusText },
+            response
+          );
+          return;
+        }
+      } catch (error) {
+        console.error("error", error);
+      }
+    }
+    callback(null, tokenList);
+    console.log("파일 업로드 종료");
+  }
 }
 /** 파일 미리보기 화면 */
 function showFileList() {
+  console.log(fileArr);
   const MAX_FILE_COUNT = 5;
   const MAX_FILE_SIZE_MB = 50;
   let preview = "";
@@ -110,7 +328,6 @@ function showFileList() {
     const fileSizeMB = file.size / (1024 * 1024);
     // 중복 파일 여부 확인
     if (uniqueFiles.some((f) => f.lastModified === file.lastModified)) {
-      console.log(`중복파일:${file.name}`);
       duplicateFiles.push(file);
       continue;
     } else if (fileSizeMB > MAX_FILE_SIZE_MB) {
@@ -199,123 +416,15 @@ function showFileList() {
       }
     } else {
       let dataIndexValue = $(this).data("index");
-      console.log(`${dataIndexValue} 삭제`);
       fileArr = [...fileArr].filter((o) => o.lastModified !== dataIndexValue);
       showFileList();
     }
   });
 })();
-/** input 필수값 미입력 or 형식에 맞지 않을 때 강조 클래스 추가 */
-function showValidate(input) {
-  var thisAlert = $(input).parent();
-  $(thisAlert).addClass("alert-validate");
-}
-/** input 강조 클래스 삭제 */
-function hideValidate(input) {
-  var thisAlert = $(input).parent();
-  $(thisAlert).removeClass("alert-validate");
-}
-/** 스크롤을 제일 아래로 이동시키는 함수*/
-function scrollToBottom(id) {
-  $("#" + id).scrollTop($("#" + id).prop("scrollHeight"));
-}
-/** 스크롤 이동  */
-function $scrollTo(from, to) {
-  if ((from, to)) {
-    $(from).animate(
-      {
-        scrollTop:
-          $(to).offset().top -
-          50 -
-          $("#formData").offset().top +
-          $("#formData").scrollTop(),
-      },
-      500
-    );
-  }
-}
-/** 로딩 화면 노출 */
-function loading(param) {
-  if (param == "show") {
-    $(".contact2-form").remove(); // form 화면 삭제
-    const loading = `<div style="z-index:1;opacity:0.2;" id="fetch-loading"><div class="half-ring"></div></div>`;
-    $(".wrap-title").after(loading); // 로딩 화면 show
-    $('.close').hide(); // 닫기버튼 hide
-  } else if (param == "hide") {
-    $("#fetch-loading").remove(); // loading 화면 삭제
-    $(".floating-frame").show(); // 기존 화면 show
-    $('.close').show(); // 닫기버튼 show
-  }
-}
-/** 티켓 생성 API 호출 (중요)*/
-async function createTicket(formData, callback) {
-  console.log("createTicket function start");
-  $("#submitBtn").prop("disabled", true);
-  let tokenList = [];
-  // 파일 업로드
-  if (fileArr.length > 0) {
-    await uploadFile(fileArr, (err, data) => {
-      if (err) {
-        callback(err, data);
-        return false;
-      } else {
-        tokenList = data;
-      }
-    });
-    if (_.isEmpty(tokenList)) {
-      return;
-    }
-  }
-  // 티켓 생성 body 세팅
-  let createBody = {
-    ticket: {
-      subject: formData.find((o) => o.name == "title").value,
-      comment: {
-        body: formData.find((o) => o.name == "comment").value,
-        uploads: tokenList,
-      },
-      custom_fields: [
-        {
-          id: 20604769936153,
-          value: formData.find((o) => o.name == "site").value,
-        },
-        {
-          id: 20611214831257,
-          value: formData.find((o) => o.name == "name").value,
-        },
-      ],
-      requester: {
-        name: formData.find((o) => o.name == "name").value,
-        email: formData.find((o) => o.name == "email").value,
-      },
-    },
-  };
-  // file 업로드 시 "Content-Type"을 바꿔주기때문에 다시 바꿔줘야함
-  apiHeaders.set("Content-Type", "application/json");
-  let createOption = {
-    method: "POST",
-    headers: apiHeaders,
-    body: JSON.stringify(createBody),
-    redirect: "follow",
-  };
-  
-  // test용! 아래 리턴까지 주석 필요함
-  // callback(null, "test"); 
-  // return;
-  // 티켓 생성 api 호출
-  
-  const result = await fetch("zen/api/v2/tickets.json", createOption);
-  if (result.ok) {
-    const response = await result.json();
-    callback(null,result)
-    console.log("create success!!:", response);
-    return;
-  } else {
-    callback({ status: result.status, statusText: result.statusText },result)
-    alert("생성중 오류가 발생했습니다. 잠시 후 다시 등록해주세요.");
-    console.log("티켓 생성 실패",result.json());
-    return;
-  }
+/**textarea 크기 조절 */
+function autoResizeTextarea() {
+  $(this).css("height", "auto");
+  $(this).css("height", this.scrollHeight + "px");
 }
 /** 문의 접수 완료 화면 */
 function completedScreen() {
@@ -353,178 +462,76 @@ function errorScreen() {
   $(".wrap-title").after(completed);
   sendYn = true;
 }
-/** 젠데스크 서버에 파일 업로드 */
-async function uploadFile(fileArr, callback) {
-  let tokenList = [];
-
-  if (!_.isEmpty(fileArr)) {
-    console.log(`파일 업로드 ${fileArr.length}건 실행`);
-    for (const file of fileArr) {
-      apiHeaders.set("Content-Type", file.type || "text/plain"); // 브라우저에서 MIME를 정해주지않으면 일단 text/plain으로 변경하는데 이건 확인필요?
-      try {
-        let requestOptions = {
-          method: "POST",
-          headers: apiHeaders,
-          body: file,
-          redirect: "follow",
-        };
-        
-        const response = await fetch(
-          `zen/api/v2/uploads.json?filename=${file.name}`,
-          requestOptions
-        );
-        if (response.ok) {
-          const result = await response.json();
-          tokenList.push(result.upload.token);
-          console.log({ fileName:file.name,status: result.status, statusText: result.statusText });
-        } else {
-          console.log(`파일 업로드 에러 발생>> ${file.name}`);
-          callback(
-            { status: response.status, statusText: response.statusText },
-            response
-          );
-          return;
-        }
-      } catch (error) {
-        console.error("error", error);
-      }
-    }
-    callback(null, tokenList);
-    console.log("파일 업로드 종료");
+/** input 필수값 미입력 or 형식에 맞지 않을 때 강조 클래스 추가 */
+function showValidate(input) {
+  var thisAlert = $(input).parent();
+  $(thisAlert).addClass("alert-validate");
+}
+/** input 강조 클래스 삭제 */
+function hideValidate(input) {
+  var thisAlert = $(input).parent();
+  $(thisAlert).removeClass("alert-validate");
+}
+/** 스크롤을 제일 아래로 이동시키는 함수*/
+function scrollToBottom(id) {
+  $("#" + id).scrollTop($("#" + id).prop("scrollHeight"));
+}
+/** 스크롤 이동  */
+function scrollTo(from, to) {
+  if ((from, to)) {
+    $(from).animate(
+      {
+        scrollTop:
+          $(to).offset().top -
+          50 -
+          $("#formData").offset().top +
+          $("#formData").scrollTop(),
+      },
+      500
+    );
   }
 }
-/**폼 제출 (중요)*/
-function formSubmit(){
-  // form 제출
-  $("#formData").on("submit", async function (event) {
-    event.preventDefault();
-
-    let fields = [
-      {
-        name: "email",
-        selector: '.validate-input input[name="email"]',
-        required: true,
-        pattern:
-          /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/,
-      },
-      {
-        name: "name",
-        selector: '.validate-input input[name="name"]',
-        required: true,
-      },
-      {
-        name: "site",
-        selector: '.validate-input input[name="site"]',
-        required: true,
-      },
-      {
-        name: "title",
-        selector: '.validate-input input[name="title"]',
-        required: true,
-      },
-      {
-        name: "comment",
-        selector: '.validate-input textarea[name="comment"]',
-        required: true,
-      },
-    ];
-
-    let invalidFields = [];
-    fields.forEach((field) => {
-      let input = $(field.selector);
-      let value = input.val().trim();
-      let valid =
-        !(field.required && value === "") &&
-        !(field.pattern && !field.pattern.test(value));
-
-      if (!valid) {
-        invalidFields.push(field.selector);
-        showValidate(input); // 유효하지 않은 입력에 대한 오류 메시지 표시
-      } else {
-        $(input).parent().addClass("true-validate")
-        hideValidate(input); // 유효한 입력에 대한 오류 메시지 숨기기
-      }
-    });
-
-    let check = invalidFields.length === 0;
-    //유효성 체크 통과
-    if (check) {
-      loading("show");
-      await createTicket($(this).serializeArray(), (err, data) => {
-        if (err) {
-          console.log(err);
-          errorScreen();
-        } else {
-          console.log('??????????');
-          console.log({ status: data.status, statusText: data.statusText });
-          completedScreen();
-        }
-      });
-      fileArr = []; //초기화
-      $(this).trigger("reset");
-      $(".input-file-div").remove();
-      loading("hide");
-      $(".contact2-form").hide();
-    } else {
-      $scrollTo("#formData", invalidFields[0]);
-    }
-
-    return check;
-  });
-}
-/**textarea 크기 조절 */
-function autoResizeTextarea() {
-  $(this).css("height", "auto");
-  $(this).css("height", this.scrollHeight + "px");
-}
-/** 포커스 후 강조 삭제 */
-function formAlertDelete(){
-  $(".validate-form .input2").each(function () {
-    $(this).focus(function () {
-      hideValidate(this);
-    });
-  });
-}
-/** 폼 제출로 변경 */
-function submitChange(){
-  $("#submitBtn").on("click", function () {
-    $("#formData").submit();
-  });
-}
-/** 파일 업로드 감지*/
-function changeFiles(){
-  $("#input-file").change(function () {
-    fileArr.push(...this.files);
-    fileArr = [...fileArr];
-    showFileList();
-  });
-}
-/** 파일 업로드 시 기존 선택값 삭제 */
-function deleteSelectedValue(){
-  $('#input-file').on("click",function(){
-    $(this).val(null);
-  })
-}
-/**input 변경 감지, class 변경*/
-function inputValChange(){
-  $(".input2").each(function () {
-    $(this).on("blur", function () {
-      if ($(this).val().trim() != "") {
-        $(this).addClass("has-val");
-        if($(this).attr('name') == "email"){
-          const pattern = /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{1,5}|[0-9]{1,3})(\]?)$/;
-          if(pattern.test($(this).val().trim())){
-            $(this).parent().addClass("true-validate")
-          }
-        }else{
-          $(this).parent().addClass("true-validate")
-        }
-        
-      } else {
-        $(this).parent().removeClass("true-validate")
-        $(this).removeClass("has-val");
-      }
-    });
-  });
+/** 로딩 화면 노출 */
+function loading(param) {
+  if (param == "show") {
+    $(".contact2-form").remove(); // form 화면 삭제
+    const loading = `<div style="z-index:1;opacity:0.2;" id="fetch-loading"><div class="half-ring"></div></div>`;
+    $(".wrap-title").after(loading); // 로딩 화면 show
+    $(".close").hide(); // 닫기버튼 hide
+  } else if (param == "hide") {
+    $("#fetch-loading").remove(); // loading 화면 삭제
+    $(".inquiry-frame").show(); // 기존 화면 show
+    $(".close").show(); // 닫기버튼 show
+  }
 }
 
+function zendeskError(){
+  var myHeaders = new Headers();
+myHeaders.append("coginsight-domain-id", "587fa4a1-192e-4ea4-b733-2e1c9cc28edf");
+myHeaders.append("coginsight-api-key", "BkyU7uSRt1MAlioglmsljIU49zRGbFqNU5Rx4sFCxebqUiXPZtHiI1qJIKInQlyOEzTU3swcuRPXRSNkz3yNEQ==|codx5hGV3Rvq79pS6T3prG0Ysbm9PFPzYOFmKBLNhGk=");
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({
+  "resultCode": "200",
+  "resultMessage": "test",
+  "email": "sh.park@mindwareworks.com",
+  "name": "박세현",
+  "site": "mind",
+  "title": "title",
+  "comment": "test",
+  "file": ""
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("https://stage.coginsight.net/apis/esd/ZENDESK_ERROR/records", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+}
+zendeskError()

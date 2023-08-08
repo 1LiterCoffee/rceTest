@@ -1,9 +1,13 @@
-body,
-html {
-  font-family: Poppins-Regular, sans-serif;
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+.inquiry-box label{
+  display: inline-block;
 }
 
-.floating-start {
+.inquiry-start {
   background: transparent;
   border: none;
   /* position:absolute; */
@@ -14,12 +18,21 @@ html {
   height: 50px;
   padding: 0px;
 }
-.floating-start img {
+.inquiry-start img {
   width: 50px;
   height: 50px;
 }
-
-.floating-box {
+@media (max-width: 400px) {
+  .inquiry-box {
+    width: 300px !important;
+    height: 500px !important;
+  }
+  .inquiry-frame{
+    width: 300px !important;
+    height: 500px !important;
+  }
+}
+.inquiry-box {
   box-shadow: rgba(0, 0, 0, 0.2) 0px -0.0714286rem 0.857143rem;
   width: 360px;
   height: 615px;
@@ -45,7 +58,7 @@ html {
     transform: translateY(0%); /* 100px까지 올라감 */
   }
 }
-.floating-box .floating-frame {
+.inquiry-box .inquiry-frame {
   border: 1px solid #aaa;
   width: 360px;
   height: 615px;
@@ -54,7 +67,7 @@ html {
   border: none;
 }
 
-.floating-box .close {
+.inquiry-box .close {
   position: absolute;
   width: 34px;
   height: 55px;
@@ -66,14 +79,14 @@ html {
   border: none;
 }
 
-.floating-box .close img {
+.inquiry-box .close img {
   width: 24px;
   height: 24px;
 }
-.floating-box .open {
+.inquiry-box .open {
   top: 625px;
 }
-.floating-container {
+.inquiry-container {
   background: #fff;
   overflow: hidden;
   padding: 15px;
@@ -103,50 +116,6 @@ html {
   height: 30px;
 }
 
-/* a {
-  font-family: Poppins-Regular;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #666;
-  margin: 0;
-  transition: all 0.4s;
-  -webkit-transition: all 0.4s;
-  -o-transition: all 0.4s;
-  -moz-transition: all 0.4s;
-}
-
-a:focus {
-  outline: none !important;
-}
-
-a:hover {
-  text-decoration: none;
-  color: #57b846;
-} */
-
-/* h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-} */
-
-/* p {
-  font-family: Poppins-Regular;
-  font-size: 14px;
-  line-height: 1.7;
-  color: #666;
-  margin: 0;
-}
-
-ul,
-li {
-  margin: 0;
-  list-style-type: none;
-} */
-
 .wrap-contact2 input {
   outline: none;
   border: none;
@@ -156,92 +125,92 @@ li {
   padding: 5px;
 }
 
-textarea {
+.inquiry-box textarea {
   outline: none;
   border: none;
   resize: none;
 }
 
-textarea:focus,
-input:focus {
+.inquiry-box textarea:focus,
+.inquiry-box input:focus {
   border-color: transparent !important;
 }
 
-input:focus::-webkit-input-placeholder {
+.inquiry-box input:focus::-webkit-input-placeholder {
   color: transparent;
 }
 
-input:focus:-moz-placeholder {
+.inquiry-box input:focus:-moz-placeholder {
   color: transparent;
 }
 
-input:focus::-moz-placeholder {
+.inquiry-box input:focus::-moz-placeholder {
   color: transparent;
 }
 
-input:focus:-ms-input-placeholder {
+.inquiry-box input:focus:-ms-input-placeholder {
   color: transparent;
 }
 
-textarea:focus::-webkit-input-placeholder {
+.inquiry-box textarea:focus::-webkit-input-placeholder {
   color: transparent;
 }
 
-textarea:focus:-moz-placeholder {
+.inquiry-box textarea:focus:-moz-placeholder {
   color: transparent;
 }
 
-textarea:focus::-moz-placeholder {
+.inquiry-box textarea:focus::-moz-placeholder {
   color: transparent;
 }
 
-textarea:focus:-ms-input-placeholder {
+.inquiry-box textarea:focus:-ms-input-placeholder {
   color: transparent;
 }
 
-input::-webkit-input-placeholder {
+.inquiry-box input::-webkit-input-placeholder {
   color: #999;
 }
 
-input:-moz-placeholder {
+.inquiry-box input:-moz-placeholder {
   color: #999;
 }
 
-input::-moz-placeholder {
+.inquiry-box input::-moz-placeholder {
   color: #999;
 }
 
-input:-ms-input-placeholder {
+.inquiry-box input:-ms-input-placeholder {
   color: #999;
 }
 
-textarea::-webkit-input-placeholder {
+.inquiry-box textarea::-webkit-input-placeholder {
   color: #999;
 }
 
-textarea:-moz-placeholder {
+.inquiry-box textarea:-moz-placeholder {
   color: #999;
 }
 
-textarea::-moz-placeholder {
+.inquiry-box textarea::-moz-placeholder {
   color: #999;
 }
 
-textarea:-ms-input-placeholder {
+.inquiry-box textarea:-ms-input-placeholder {
   color: #999;
 }
 
-button {
+.inquiry-box button {
   outline: none !important;
   border: none;
   background: 0 0;
 }
 
-button:hover {
+.inquiry-box button:hover {
   cursor: pointer;
 }
 
-iframe {
+.inquiry-box iframe {
   border: none !important;
 }
 
@@ -335,6 +304,7 @@ iframe {
   padding:15px;
 }
 .wrap-completed .title {
+  padding: 10px;
   width: 100%;
   text-align: center;
   font-weight: 600;

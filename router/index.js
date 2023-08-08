@@ -3,6 +3,9 @@ const path = require('path');
 const router = express.Router();
 const moment = require("moment-timezone");
 const wrap = require("express-async-wrap");
+const bodyParser = require("body-parser")
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: false }));
 router.use(express.static('public'));
 
 router.get(
@@ -13,5 +16,13 @@ router.get(
     res.sendFile(filePath)
   })
 );
-
+router.get(
+  "/test",
+  wrap(async function (req, res, next) {
+    console.log(`${moment().format("MM-DD HH:mm:ss")} test in`);
+    console.log(req.body);
+    const result = req.body.data;
+    res.send(`!!!${result}!!!`)
+  })
+);
 module.exports = router;
