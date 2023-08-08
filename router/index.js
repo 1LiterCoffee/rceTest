@@ -31,7 +31,7 @@ router.post(
     console.log(`${moment().format("MM-DD HH:mm:ss")} dec in`);
     console.log(req.body);
     const result = req.body.data.replace(/\[enc\]/,"")
-    res.json(`${result}[dec]`)
+    res.json([`${result}[dec]`])
   })
 );
 module.exports = router;
