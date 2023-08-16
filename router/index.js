@@ -16,6 +16,14 @@ router.get(
     res.sendFile(filePath)
   })
 );
+router.get(
+  "/time",
+  wrap(async function (req, res, next) {
+    setTimeout(()=>{
+      res.json("5초뒤 답")
+    },5000)
+  })
+);
 router.post(
   "/enc",
   wrap(async function (req, res, next) {
